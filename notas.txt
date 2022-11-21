@@ -1,0 +1,18 @@
+klant: voornaam, achternaam, mail, website
+gebruiker: voornaam, achternaam, mail, website
+project: naam, omschrijving, eindddatum
+taken: naam/beschrijving, startdatum, einddatum, responsible, al_gestart, taak_gedaan
+
+
+kiezen project - linken aan klant
+projecten per klant
+ook per project sorteren
+kunnen wissen van project, klant, taken
+taken: overzicht wie wat
+lijst openstaande taken, welke gedaan
+per project lijst van taken
+klant wissen -> project ook wissen, taken ook wissen
+taak: kan zijn dat deze nog geen gebruiker heeft (bijv. is voor toekomst)
+
+
+
