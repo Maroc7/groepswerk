@@ -1,4 +1,5 @@
 import user
+import task
 user_list = []
 
 def do_run():
@@ -6,6 +7,7 @@ def do_run():
     """
     user.add_user(user_list)
     user.show_users(user_list)
+    task.do_all()
 
 
 if __name__ == '__main__':
