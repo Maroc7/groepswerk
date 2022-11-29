@@ -92,7 +92,6 @@ def print_all(tasks):
         print("status : {}".format(task._status))
 
 
-
 def do_all():
     tasks = create_tasks()
     print_all(tasks)

@@ -1,4 +1,5 @@
 import re
+import db
 
 class User():
     __firstname = ""
@@ -44,6 +45,7 @@ class User():
             self.__email = value
         else:
             print("Invalid Email address")
+            self.__email = "n/a"
         
     @property
     def website(self):
@@ -79,29 +81,34 @@ def create_user() -> User:
     return user
 
 
-def add_user(user_list):
+def add_user():
     """allows to add a user to the user list
     """
-    person = create_user()
-    user_list.append(person)
-    print(f"{user_list[0].firstname} added")
+    User = create_user()
+    try:
+        sql_cmd = f"insert into t_user (f_firstname, f_lastname, f_mail, f_website) values ('{User.firstname}', '{User.lastname}', '{User.email}', '{User.website}');"
+        db.cursor.execute(sql_cmd)
+        db.connection.commit()
+    except Exception as e:
+        print(f'fout: {e}')
 
 
-def show_users(user_list: list):
-    """Shows all users in the user list
-
-    Args:
-        user_list (list): the list with users
+def show_users():
+    """show all users
     """
-    print('USERS:')
-    print('')
-    for user in user_list:
-        print(f'user {user_list.index(user)}')
-        print(f'full name: {user.fullname}')
-        print(f'mail address: {user.email}')
-        print(f'website: {user.website}')
-        print('')
-
+    try:
+        sql_cmd = 'select * from t_user;'
+        db.cursor.execute(sql_cmd)
+    
+        rows = db.cursor.fetchall()
+        if len(rows) > 0:
+            for row in rows:
+                print(row)
+        else:
+            print('geen gegevens gevonden')    
+    except Exception as e:
+        print(f'fout: {e}')
+  
 
 def get_input(text: str):
     """gets input

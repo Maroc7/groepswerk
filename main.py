@@ -1,9 +1,12 @@
 import user
 import task
+import db
+
 user_list = []
 C_ACTION_MAKE_TASK = 1
 C_ACTION_MAKE_USER = 2
 C_ACTION_SHOW_USER = 3
+C_STOP = 99
 C_ACTIONS = [C_ACTION_MAKE_TASK,C_ACTION_MAKE_TASK,C_ACTION_SHOW_USER]
 
 
@@ -23,12 +26,13 @@ def menu_header() -> int:
     print(f'{C_ACTION_MAKE_TASK}. Create task')
     print(f'{C_ACTION_MAKE_USER}. Create user')
     print(f'{C_ACTION_SHOW_USER}. Show users')
+    print(f'{C_STOP}. Stop program')
     print("-"*35)
     print("-"*35)
 
     try:
         print("")
-        choice = int(input("Make youre choice: "))
+        choice = int(input("Make your choice: "))
     except Exception as e:
         print("Select choice by given int,{}".format(e))
         menu_header()
@@ -36,26 +40,25 @@ def menu_header() -> int:
 
 
 
-def do_menu(choice:int):
+def do_menu():
     """
     Summary line.
     runs functions of choice
     return: nothing
     """
+    loop = True
+    while loop:
+        choice = menu_header()
+        if choice == C_ACTION_MAKE_TASK:
+            task.do_all()
+        if choice == C_ACTION_MAKE_USER:
+            user.add_user()
+        if choice == C_ACTION_SHOW_USER:
+            user.show_users()
+        if choice == C_STOP:
+            loop = False
 
-    if choice == C_ACTION_MAKE_TASK:
-        task.do_all()
-    if choice == C_ACTION_MAKE_USER:
-        user.add_user(user_list)
-        user.show_users(user_list)
-    if choice == C_ACTION_SHOW_USER:
-        user.show_users(user_list)
-
-
-
-
-def do_run():
-    choice = menu_header()
-    do_menu(choice)
-
-do_run()
+if __name__ == "__main__":
+    db.get_sql_lite_connection()
+    do_menu()
+    db.close_sql_lite_connection()
