@@ -1,5 +1,6 @@
 import re
 import db
+from inputs import get_input_item
 
 class User():
     __firstname = ""
@@ -53,7 +54,11 @@ class User():
 
     @website.setter
     def website(self, value):
-        self.__website = value
+        if '.' in value:
+            self.__website = value
+        else:
+            print('invalid website')
+            self.__website = 'n/a'
 
     @property
     def fullname(self) -> str:
@@ -71,10 +76,10 @@ def create_user() -> User:
     Returns:
         User: the user
     """
-    firstname = get_input('first name')
-    lastname = get_input('last name')
-    email = get_input('email')
-    website = get_input('website')
+    firstname = get_input_item('Give first name')
+    lastname = get_input_item('Give last name')
+    email = get_input_item('Give email')
+    website = get_input_item('Give website')
     user = User(firstname, lastname)
     user.email = email
     user.website = website
@@ -101,23 +106,33 @@ def show_users():
         db.cursor.execute(sql_cmd)
     
         rows = db.cursor.fetchall()
+        print('-'*50)
+        print('user ID - firstname - lastname - mail - website')
+        print('-'*50)
         if len(rows) > 0:
             for row in rows:
-                print(row)
+                for i in row:
+                    print(i, end=' - ')
+                print('')
         else:
             print('geen gegevens gevonden')    
     except Exception as e:
         print(f'fout: {e}')
   
 
-def get_input(text: str):
-    """gets input
-
-    Args:
-        text (str): text that indicates which input is asked
-
-    Returns:
-        _type_: _description_
+def delete_user():
+    """deletes user
     """
-    inp = input(f'Please enter {text}: ')
-    return inp
+    show_users()
+    inp = get_input_item("Select user id to delete", 1)
+    check = get_input_item(f'WARNING: Delete is irreversible, enter "y" if you wish to delete user {inp}?')
+    if check.strip().lower() == "y":
+        try:
+            sql_cmd = f'delete from t_user where pk_id = {inp};'
+            db.cursor.execute(sql_cmd)
+            db.connection.commit()
+            print('User deleted') 
+        except Exception as e:
+            print(f'fout: {e}')
+    else:
+        print('Nothing was deleted.') 
