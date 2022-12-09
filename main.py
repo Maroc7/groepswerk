@@ -37,7 +37,7 @@ def menu_header() -> int:
         choice = int(input("Make your choice: "))
     except Exception as e:
         print("Select choice by given int,{}".format(e))
-        menu_header()
+        choice = menu_header()
     return choice
 
 
