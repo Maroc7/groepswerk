@@ -6,8 +6,9 @@ user_list = []
 C_ACTION_MAKE_TASK = 1
 C_ACTION_MAKE_USER = 2
 C_ACTION_SHOW_USER = 3
+C_ACTION_DELETE_USER = 4
 C_STOP = 99
-C_ACTIONS = [C_ACTION_MAKE_TASK,C_ACTION_MAKE_TASK,C_ACTION_SHOW_USER]
+C_ACTIONS = [C_ACTION_MAKE_TASK,C_ACTION_MAKE_TASK,C_ACTION_SHOW_USER, C_ACTION_DELETE_USER]
 
 
 def menu_header() -> int:
@@ -26,6 +27,7 @@ def menu_header() -> int:
     print(f'{C_ACTION_MAKE_TASK}. Create task')
     print(f'{C_ACTION_MAKE_USER}. Create user')
     print(f'{C_ACTION_SHOW_USER}. Show users')
+    print(f'{C_ACTION_DELETE_USER}. Delete user')
     print(f'{C_STOP}. Stop program')
     print("-"*35)
     print("-"*35)
@@ -55,6 +57,8 @@ def do_menu():
             user.add_user()
         if choice == C_ACTION_SHOW_USER:
             user.show_users()
+        if choice == C_ACTION_DELETE_USER:
+            user.delete_user()
         if choice == C_STOP:
             loop = False
 
