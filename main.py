@@ -51,7 +51,6 @@ def menu_header() -> int:
     return choice
 
 
-
 def do_menu():
     """
     Summary line.
@@ -86,7 +85,6 @@ def menu_task_header():
     print("-"*35)
 
 
-
 def menu_task():
     """
     this is an sub-menu for tasks.
@@ -116,12 +114,11 @@ def menu_header_user():
     print("USER MENU")
     print("")
     print(f'{C_ACTION_MAKE_USER}. Create user')
-    print(f'{C_ACTION_SHOW_USER}. Show user')
+    print(f'{C_ACTION_SHOW_USER}. Show users')
     print(f'{C_ACTION_DELETE_USER}. Delete user')
     print(f'{C_ACTION_RETURN}. Return to main menu')
     print("-"*35)
     print("-"*35)
-
 
 
 def menu_user():
@@ -137,7 +134,7 @@ def menu_user():
             user.add_user()
             menu_header_user()
         if choice == C_ACTION_SHOW_USER:
-            user.show_users()
+            user.User.show_users()
             menu_header_user()
         if choice == C_ACTION_DELETE_USER:
             user.delete_user()
@@ -147,8 +144,11 @@ def menu_user():
             do_menu()
 
 
-
 if __name__ == "__main__":
-    db.get_sql_lite_connection()
-    do_menu()
-    db.close_sql_lite_connection()
+    try:
+        db.get_sql_lite_connection()
+        do_menu()
+    except Exception as e:
+        print(f'something went wrong: {e}')
+    finally:
+        db.close_sql_lite_connection()

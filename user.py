@@ -8,7 +8,7 @@ class User():
     __email = "none"
     __website ="none"
 
-    def __init__(self, firstname, lastname):
+    def __init__(self, firstname: str, lastname: str):
         self.__firstname =  firstname
         self.__lastname = lastname
 
@@ -34,18 +34,10 @@ class User():
 
     @email.setter
     def email(self, value: str):
-        """  checks if the email address is valid by using a regex
-        https://www.w3schools.com/python/python_regex.asp
-        https://stackabuse.com/python-validate-email-address-with-regular-expressions-regex/
-                
-        Args:
-            value (str): the email to check
-        """
-        regex = r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+'
-        if(re.match(regex, value)):
+        if "." in value and "@" in value:
             self.__email = value
         else:
-            print("Invalid Email address")
+            print("invalid email address")
             self.__email = "n/a"
         
     @property
@@ -53,7 +45,7 @@ class User():
         return self.__website
 
     @website.setter
-    def website(self, value):
+    def website(self, value: str):
         if '.' in value:
             self.__website = value
         else:
@@ -68,6 +60,53 @@ class User():
             str: the full name of the user
         """
         return self.__firstname + " " + self.__lastname
+
+    def write_user(self):
+        """writes user to the database
+        """
+        try:
+            sql_cmd = f"insert into t_user (f_firstname, f_lastname, f_mail, f_website) values ('{self.firstname}', '{self.lastname}', '{self.email}', '{self.website}');"
+            db.cursor.execute(sql_cmd)
+            db.connection.commit()
+        except Exception as e:
+            print(f'fout: {e}')
+
+    @classmethod
+    def delete_user(cls, inp: int):
+        """delete user from database
+
+        Args:
+            inp (int): id nr of user to be deleted
+        """
+        try:
+            sql_cmd = f'delete from t_user where pk_id = {inp};'
+            db.cursor.execute(sql_cmd)
+            db.connection.commit()
+            print('User deleted') 
+        except Exception as e:
+            print(f'fout: {e}')
+
+    @classmethod
+    def show_users(cls):
+        """show all users
+        """
+        try:
+            print('test')
+            sql_cmd = 'select * from t_user;'
+            db.cursor.execute(sql_cmd)
+            rows = db.cursor.fetchall()
+            print('-'*50)
+            print('user ID - firstname - lastname - mail - website')
+            print('-'*50)
+            if len(rows) > 0:
+                for row in rows:
+                    for i in row:
+                        print(i, end=' | ')
+                    print('')
+            else:
+                print('geen gegevens gevonden')    
+        except Exception as e:
+            print(f'fout: {e}')
 
 
 def create_user() -> User:
@@ -89,50 +128,17 @@ def create_user() -> User:
 def add_user():
     """allows to add a user to the user list
     """
-    User = create_user()
-    try:
-        sql_cmd = f"insert into t_user (f_firstname, f_lastname, f_mail, f_website) values ('{User.firstname}', '{User.lastname}', '{User.email}', '{User.website}');"
-        db.cursor.execute(sql_cmd)
-        db.connection.commit()
-    except Exception as e:
-        print(f'fout: {e}')
-
-
-def show_users():
-    """show all users
-    """
-    try:
-        sql_cmd = 'select * from t_user;'
-        db.cursor.execute(sql_cmd)
-    
-        rows = db.cursor.fetchall()
-        print('-'*50)
-        print('user ID - firstname - lastname - mail - website')
-        print('-'*50)
-        if len(rows) > 0:
-            for row in rows:
-                for i in row:
-                    print(i, end=' - ')
-                print('')
-        else:
-            print('geen gegevens gevonden')    
-    except Exception as e:
-        print(f'fout: {e}')
+    user = create_user()
+    user.write_user()
   
 
 def delete_user():
-    """deletes user
+    """asks user which id to delete, double checks with user if ok to delete and than calls method to delete user
     """
-    show_users()
+    User.show_users()
     inp = get_input_item("Select user id to delete", 1)
     check = get_input_item(f'WARNING: Delete is irreversible, enter "y" if you wish to delete user {inp}?')
     if check.strip().lower() == "y":
-        try:
-            sql_cmd = f'delete from t_user where pk_id = {inp};'
-            db.cursor.execute(sql_cmd)
-            db.connection.commit()
-            print('User deleted') 
-        except Exception as e:
-            print(f'fout: {e}')
+        User.delete_user(inp)
     else:
-        print('Nothing was deleted.') 
+        print('No deletion was done.') 
