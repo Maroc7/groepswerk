@@ -71,8 +71,8 @@ class User():
         except Exception as e:
             print(f'fout: {e}')
 
-    @classmethod
-    def delete_user(cls, inp: int):
+    @staticmethod
+    def delete_user(inp: int):
         """delete user from database
 
         Args:
@@ -86,13 +86,19 @@ class User():
         except Exception as e:
             print(f'fout: {e}')
 
-    @classmethod
-    def show_users(cls):
+    @staticmethod
+    def show_users(project_id = -1):
         """show all users
         """
+        project_id = get_input_item("Enter -1 to show all users or enter project id n° to show project specific users", 1)
         try:
-            print('test')
-            sql_cmd = 'select * from t_user;'
+            if project_id == -1:
+                sql_cmd = 'select * from t_user;'
+            else:
+                sql_cmd = f'select f_firstname from t_user \
+                            inner join t_task on t_user.pk_id = t_task.fk_user_id \
+                            inner join t_project on t_task.fk_project_id = t_project.pk_id \
+                            where t_project.pk_id = {project_id};'
             db.cursor.execute(sql_cmd)
             rows = db.cursor.fetchall()
             print('-'*50)
@@ -100,6 +106,7 @@ class User():
             print('-'*50)
             if len(rows) > 0:
                 for row in rows:
+                    print('| ', end='')
                     for i in row:
                         print(i, end=' | ')
                     print('')
@@ -142,3 +149,5 @@ def delete_user():
         User.delete_user(inp)
     else:
         print('No deletion was done.') 
+
+

@@ -40,7 +40,12 @@ INSERT INTO "t_user" ("pk_id","f_firstname","f_lastname","f_mail","f_website") V
  (2,'Hamza','Maroc','hamza@mail.com','www.hamza.be'),
  (3,'Akhmed','Barshigov','akhmed@mail.com','www.akhmed.be'),
  (4,'Ilyas','Caluwe','ilyas.caluwe@gmail.com','www.ilyas.be'),
- (7,'test','test','test@gmail.com','www.test.be'),
  (10,'kamal','maroc','kamalmaroc@gmail.con','www.kamal');
-INSERT INTO "t_task" ("pk_id","f_name","f_start_date","f_end_date","f_status","fk_user_id","fk_project_id") VALUES (4,'database','10/11/2022','10/12/2022','Finished by Ilyas Caluwe',NULL,NULL);
+INSERT INTO "t_project" ("pk_id","f_name","f_description","f_start_date","f_end_date","fk_client_id") VALUES (1,'pm software','a programe to do project management tasks, this is the assignment for a group project at Syntra','15/10/2022','15/01/2023',1);
+INSERT INTO "t_client" ("pk_id","f_firstname","f_lastname","f_mail","f_website","fk_project") VALUES (1,'clientfirstname','clientlastname','client_mail@clientcompany.com','www.client1.com',1);
+INSERT INTO "t_task" ("pk_id","f_name","f_start_date","f_end_date","f_status","fk_user_id","fk_project_id") VALUES (4,'database','10/11/2022','10/12/2022','Finished by Ilyas Caluwe',4,1),
+ (5,'menu','9/11/2022','11/11/2022','Finished by Hamza',2,1),
+ (6,'client module','10/11/2022','19/12/2022','Finished by Akhmed',3,1),
+ (7,'project module','10/10/2022','10/11/2022','Finished by Bart',1,1),
+ (8,'newtask','10/10/2022','10/12/2022','ongoing',NULL,NULL);
 COMMIT;

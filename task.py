@@ -145,7 +145,7 @@ def show_task():
     """show all tasks
     """
     try:
-        sql_cmd = 'select * from f_task;'
+        sql_cmd = 'select * from t_task;'
         db.cursor.execute(sql_cmd)
     
         rows = db.cursor.fetchall()
@@ -172,7 +172,7 @@ def delete_task():
     check = inputs.get_input_item(f'WARNING: Delete is irreversible, enter "y" if you wish to delete user {inp}?')
     if check.strip().lower() == "y":
         try:
-            sql_cmd = f'delete from f_task where pk_id = {inp};'
+            sql_cmd = f'delete from t_task where pk_id = {inp};'
             db.cursor.execute(sql_cmd)
             db.connection.commit()
             print('Task deleted') 
@@ -186,7 +186,7 @@ def delete_task():
 def add_tasks(tasks):
     for task in tasks:
         try:
-            sql_cmd = f"insert into f_task (f_name,f_start_date,f_end_date,f_status) values ('{task._name}', '{task._startdate}', '{task._enddate}', '{task._status}');"
+            sql_cmd = f"insert into t_task (f_name,f_start_date,f_end_date,f_status) values ('{task._name}', '{task._startdate}', '{task._enddate}', '{task._status}');"
             db.cursor.execute(sql_cmd)
             db.connection.commit()
             print(f"Task {task._name} is saved succesfully in the database.")
