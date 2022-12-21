@@ -2,7 +2,13 @@ import user
 import task
 import db
 import inputs
+import client
+
+
+
 user_list = []
+client_list = []
+
 
 #actions task: 
 C_ACTION_MENU_TASK = 11
@@ -15,8 +21,16 @@ C_ACTION_MAKE_USER = 4
 C_ACTION_SHOW_USER = 5
 C_ACTION_DELETE_USER = 6
 
-C_ACTION_RETURN = 0
+#actions clients:
+C_ACTION_MENU_CLIENT = 33
+C_ACTION_MAKE_CLIENT = 7
+C_ACTION_SHOW_CLIENT = 8
+C_ACTION_DELETE_CLIENT = 9
 
+
+
+
+C_ACTION_RETURN = 0
 C_STOP = 99
 C_ACTIONS = [C_ACTION_MAKE_TASK,C_ACTION_MAKE_TASK,C_ACTION_DELETE_TASK,C_ACTION_SHOW_USER, C_ACTION_DELETE_USER,C_ACTION_RETURN,C_ACTION_MENU_TASK]
 
@@ -38,6 +52,7 @@ def menu_header() -> int:
     print(f"{C_ACTION_MENU_TASK}. Task")
     #user
     print(f"{C_ACTION_MENU_USER}. User")
+    print(f"{C_ACTION_MENU_CLIENT}. Client")
     print(f'{C_STOP}. Stop program')
     print("-"*35)
     print("-"*35)
@@ -68,6 +83,10 @@ def do_menu():
         if choice == C_ACTION_MENU_USER:
             loop = False
             menu_user()
+        # client menu
+        if choice == C_ACTION_MENU_CLIENT:
+            loop = False
+            menu_client()
         if choice == C_STOP:
             loop = False
 
@@ -143,6 +162,38 @@ def menu_user():
             loop = False
             do_menu()
 
+def menu_client_header():
+    print("-"*35)
+    print("-"*35)
+    print("MENU CLIENT")
+    print("")
+    print(f'{C_ACTION_MAKE_CLIENT}. Create CLIENT')
+    print(f'{C_ACTION_SHOW_CLIENT}. Show CLIENT')
+    print(f'{C_ACTION_DELETE_CLIENT}. Delete CLIENT')
+    print(f'{C_ACTION_RETURN}. Return to main menu')
+    print("-"*35)
+    print("-"*35)
+
+
+
+def menu_client():
+    menu_client_header()
+    loop = True
+    while loop:
+        choice = inputs.get_input_item("Choice: ", 1)
+
+        if choice == C_ACTION_MAKE_CLIENT:
+            client.add_client()
+            menu_client_header()
+        if choice == C_ACTION_SHOW_CLIENT:
+            client.show_clients()
+            menu_header_user()
+        if choice == C_ACTION_DELETE_CLIENT:
+            client.delete_client()
+            menu_client_header()
+        if choice == C_ACTION_RETURN:
+            loop = False
+            do_menu()
 
 if __name__ == "__main__":
     try:

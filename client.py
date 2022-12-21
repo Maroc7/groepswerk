@@ -1,14 +1,15 @@
 import re
-
+import db
+from inputs import get_input_item
 
 class Client():
     __firstname = ""
     __lastname = ""
     __email = "none"
-    __website = "none"
+    __website ="none"
 
     def __init__(self, firstname, lastname):
-        self.__firstname = firstname
+        self.__firstname =  firstname
         self.__lastname = lastname
 
     @property
@@ -26,7 +27,7 @@ class Client():
     @lastname.setter
     def lastname(self, value):
         self.__lastname = value
-
+    
     @property
     def email(self):
         return self.__email
@@ -36,27 +37,33 @@ class Client():
         """  checks if the email address is valid by using a regex
         https://www.w3schools.com/python/python_regex.asp
         https://stackabuse.com/python-validate-email-address-with-regular-expressions-regex/
-
+                
         Args:
             value (str): the email to check
         """
         regex = r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+'
-        if (re.match(regex, value)):
+        if(re.match(regex, value)):
             self.__email = value
         else:
             print("Invalid Email address")
-
+            self.__email = "n/a"
+        
     @property
     def website(self):
         return self.__website
 
     @website.setter
     def website(self, value):
-        self.__website = value
+        if '.' in value:
+            self.__website = value
+        else:
+            print('invalid website')
+            self.__website = 'n/a'
 
     @property
     def fullname(self) -> str:
         """generates the full name of the user, based on the first and last name
+
         Returns:
             str: the full name of the user
         """
@@ -65,48 +72,67 @@ class Client():
 
 def create_client() -> Client:
     """Asks for input and returns a new user
+
     Returns:
         User: the user
     """
-    firstname = get_input('first name')
-    lastname = get_input('last name')
-    email = get_input('email')
-    website = get_input('website')
-    user = Client(firstname, lastname)
-    user.email = email
-    user.website = website
-    return user
+    firstname = get_input_item('Give first name')
+    lastname = get_input_item('Give last name')
+    email = get_input_item('Give email')
+    website = get_input_item('Give website')
+    client = Client(firstname, lastname)
+    client.email = email
+    client.website = website
+    return client
 
 
-def add_user(client_list):
-    """allows to add a client to the client list
+def add_client():
+    """allows to add a user to the user list
     """
-    person = create_client()
-    client_list.append(person)
-    print(f"{client_list[0].firstname} added")
+    client = create_client()
+    try:
+        sql_cmd = f"insert into t_client (f_firstname, f_lastname, f_mail, f_website) values ('{client.firstname}', '{client.lastname}', '{client.email}', '{client.website}');"
+        db.cursor.execute(sql_cmd)
+        db.connection.commit()
+    except Exception as e:
+        print(f'fout: {e}')
 
 
-def show_clients(client_list: list):
-    """Shows all users in the user list
-    Args:
-        client_list (list): the list with users
+def show_clients():
+    """show all clients
     """
-    print('CLIENTS:')
-    print('')
-    for client in client_list:
-        print(f'user {client_list.index(client)}')
-        print(f'full name: {client.fullname}')
-        print(f'mail address: {client.email}')
-        print(f'website: {client.website}')
-        print('')
+    try:
+        sql_cmd = 'select * from t_client;'
+        db.cursor.execute(sql_cmd)
+    
+        rows = db.cursor.fetchall()
+        print('-'*50)
+        print('user ID - firstname - lastname - mail - website')
+        print('-'*50)
+        if len(rows) > 0:
+            for row in rows:
+                for i in row:
+                    print(i, end=' - ')
+                print('')
+        else:
+            print('geen gegevens gevonden')    
+    except Exception as e:
+        print(f'fout: {e}')
+  
 
-
-def get_input(text: str):
-    """gets input
-    Args:
-        text (str): text that indicates which input is asked
-    Returns:
-        _type_: _description_
+def delete_client():
+    """deletes client
     """
-    inp = input(f'Please enter {text}: ')
-    return inp
+    show_clients()
+    inp = get_input_item("Select client id to delete", 1)
+    check = get_input_item(f'WARNING: Delete is irreversible, enter "y" if you wish to delete user {inp}?')
+    if check.strip().lower() == "y":
+        try:
+            sql_cmd = f'delete from t_client where pk_id = {inp};'
+            db.cursor.execute(sql_cmd)
+            db.connection.commit()
+            print('Client deleted') 
+        except Exception as e:
+            print(f'fout: {e}')
+    else:
+        print('Nothing was deleted.') 
