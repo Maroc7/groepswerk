@@ -53,10 +53,6 @@ def add_project(project: Project):
     project._proj_name = get_input('Geef de projectnaam:')
     project._description = get_input('Geef de projectbeschrijving')
 
-def main():
+def save_project():
     project = add_project()
     return project
-
-if __name__ == '__main__':
-    main()
-    
