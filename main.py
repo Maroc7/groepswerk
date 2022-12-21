@@ -1,14 +1,24 @@
 import user
 import task
 import db
-
+import inputs
 user_list = []
+
+#actions task: 
+C_ACTION_MENU_TASK = 11
 C_ACTION_MAKE_TASK = 1
-C_ACTION_MAKE_USER = 2
-C_ACTION_SHOW_USER = 3
-C_ACTION_DELETE_USER = 4
+C_ACTION_SHOW_TASK = 2
+C_ACTION_DELETE_TASK = 3
+#actions users:
+C_ACTION_MENU_USER = 22
+C_ACTION_MAKE_USER = 4
+C_ACTION_SHOW_USER = 5
+C_ACTION_DELETE_USER = 6
+
+C_ACTION_RETURN = 0
+
 C_STOP = 99
-C_ACTIONS = [C_ACTION_MAKE_TASK,C_ACTION_MAKE_TASK,C_ACTION_SHOW_USER, C_ACTION_DELETE_USER]
+C_ACTIONS = [C_ACTION_MAKE_TASK,C_ACTION_MAKE_TASK,C_ACTION_DELETE_TASK,C_ACTION_SHOW_USER, C_ACTION_DELETE_USER,C_ACTION_RETURN,C_ACTION_MENU_TASK]
 
 
 def menu_header() -> int:
@@ -24,10 +34,10 @@ def menu_header() -> int:
     print("-"*35)
     print("MENU")
     print("")
-    print(f'{C_ACTION_MAKE_TASK}. Create task')
-    print(f'{C_ACTION_MAKE_USER}. Create user')
-    print(f'{C_ACTION_SHOW_USER}. Show users')
-    print(f'{C_ACTION_DELETE_USER}. Delete user')
+    #task menu
+    print(f"{C_ACTION_MENU_TASK}. Task")
+    #user
+    print(f"{C_ACTION_MENU_USER}. User")
     print(f'{C_STOP}. Stop program')
     print("-"*35)
     print("-"*35)
@@ -37,9 +47,8 @@ def menu_header() -> int:
         choice = int(input("Make your choice: "))
     except Exception as e:
         print("Select choice by given int,{}".format(e))
-        menu_header()
+        choice = menu_header()
     return choice
-
 
 
 def do_menu():
@@ -51,18 +60,95 @@ def do_menu():
     loop = True
     while loop:
         choice = menu_header()
-        if choice == C_ACTION_MAKE_TASK:
-            task.do_all()
-        if choice == C_ACTION_MAKE_USER:
-            user.add_user()
-        if choice == C_ACTION_SHOW_USER:
-            user.show_users()
-        if choice == C_ACTION_DELETE_USER:
-            user.delete_user()
+        #special menu for task
+        if choice ==C_ACTION_MENU_TASK:
+            loop = False
+            menu_task()
+        #user mrnu
+        if choice == C_ACTION_MENU_USER:
+            loop = False
+            menu_user()
         if choice == C_STOP:
             loop = False
 
+
+def menu_task_header():
+    print("-"*35)
+    print("-"*35)
+    print("TASK MENU")
+    print("")
+    print(f'{C_ACTION_MAKE_TASK}. Create task')
+    print(f'{C_ACTION_SHOW_TASK}. Show task')
+    print(f'{C_ACTION_DELETE_TASK}. Delete task')
+    print(f'{C_ACTION_RETURN}. Return to main menu')
+    print("-"*35)
+    print("-"*35)
+
+
+def menu_task():
+    """
+    this is an sub-menu for tasks.
+    """
+    menu_task_header()
+    loop = True
+    while loop:
+        choice = inputs.get_input_item("Choice: ",1)
+    
+        if choice == C_ACTION_MAKE_TASK:
+            task.create_tasks()
+            menu_task_header()
+        if choice == C_ACTION_SHOW_TASK:
+            task.show_task()
+            menu_task_header()
+        if choice == C_ACTION_DELETE_TASK:
+            task.delete_task()
+            menu_task_header()
+        if choice == C_ACTION_RETURN:
+            loop = False
+            do_menu()
+
+
+def menu_header_user():
+    print("-"*35)
+    print("-"*35)
+    print("USER MENU")
+    print("")
+    print(f'{C_ACTION_MAKE_USER}. Create user')
+    print(f'{C_ACTION_SHOW_USER}. Show users')
+    print(f'{C_ACTION_DELETE_USER}. Delete user')
+    print(f'{C_ACTION_RETURN}. Return to main menu')
+    print("-"*35)
+    print("-"*35)
+
+
+def menu_user():
+    """
+    this is an sub-menu for tasks.
+    """
+    menu_header_user()
+    loop = True
+    while loop:
+        choice = inputs.get_input_item("Choice: ",1)
+    
+        if choice == C_ACTION_MAKE_USER:
+            user.add_user()
+            menu_header_user()
+        if choice == C_ACTION_SHOW_USER:
+            user.User.show_users()
+            menu_header_user()
+        if choice == C_ACTION_DELETE_USER:
+            user.delete_user()
+            menu_header_user()
+        if choice == C_ACTION_RETURN:
+            loop = False
+            do_menu()
+
+
 if __name__ == "__main__":
-    db.get_sql_lite_connection()
-    do_menu()
-    db.close_sql_lite_connection()
+    try:
+        db.get_sql_lite_connection()
+        do_menu()
+    except Exception as e:
+        print(f'something went wrong: {e}')
+    finally:
+        db.close_sql_lite_connection()
