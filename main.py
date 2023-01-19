@@ -2,6 +2,7 @@ import user
 import task
 import db
 import inputs
+import project
 user_list = []
 
 #actions task: 
@@ -14,11 +15,15 @@ C_ACTION_MENU_USER = 22
 C_ACTION_MAKE_USER = 4
 C_ACTION_SHOW_USER = 5
 C_ACTION_DELETE_USER = 6
+#actions projects:
+C_ACTION_MENU_PROJECT = 33
+C_ACTION_MAKE_PROJECT = 7
+C_ACTION_SHOW_PROJECT = 8
 
 C_ACTION_RETURN = 0
 
 C_STOP = 99
-C_ACTIONS = [C_ACTION_MAKE_TASK,C_ACTION_MAKE_TASK,C_ACTION_DELETE_TASK,C_ACTION_SHOW_USER, C_ACTION_DELETE_USER,C_ACTION_RETURN,C_ACTION_MENU_TASK]
+C_ACTIONS = [C_ACTION_MAKE_TASK,C_ACTION_MAKE_TASK,C_ACTION_DELETE_TASK,C_ACTION_SHOW_USER, C_ACTION_DELETE_USER,C_ACTION_RETURN,C_ACTION_MENU_TASK,C_ACTION_MENU_PROJECT,C_ACTION_MAKE_PROJECT,C_ACTION_SHOW_PROJECT]
 
 
 def menu_header() -> int:
@@ -38,6 +43,8 @@ def menu_header() -> int:
     print(f"{C_ACTION_MENU_TASK}. Task")
     #user
     print(f"{C_ACTION_MENU_USER}. User")
+    #project
+    print(f"{C_ACTION_MENU_PROJECT}. Project")
     print(f'{C_STOP}. Stop program')
     print("-"*35)
     print("-"*35)
@@ -64,10 +71,14 @@ def do_menu():
         if choice ==C_ACTION_MENU_TASK:
             loop = False
             menu_task()
-        #user mrnu
+        #user menu
         if choice == C_ACTION_MENU_USER:
             loop = False
             menu_user()
+        #project menu
+        if choice == C_ACTION_MENU_PROJECT:
+            loop = False
+            menu_project()            
         if choice == C_STOP:
             loop = False
 
@@ -139,6 +150,38 @@ def menu_user():
         if choice == C_ACTION_DELETE_USER:
             user.delete_user()
             menu_header_user()
+        if choice == C_ACTION_RETURN:
+            loop = False
+            do_menu()
+
+
+def menu_project_header():
+    print("-"*35)
+    print("-"*35)
+    print("PROJECT MENU")
+    print("")
+    print(f'{C_ACTION_MAKE_PROJECT}. Create project')
+    print(f'{C_ACTION_SHOW_PROJECT}. Show projects')
+    print(f'{C_ACTION_RETURN}. Return to main menu')
+    print("-"*35)
+    print("-"*35)
+
+
+def menu_project():
+    """
+    this is an sub-menu for projects.
+    """
+    menu_project_header()
+    loop = True
+    while loop:
+        choice = inputs.get_input_item("Choice: ",1)
+    
+        if choice == C_ACTION_MAKE_PROJECT:
+            project.create_project()
+            menu_project_header()
+        if choice == C_ACTION_SHOW_PROJECT:
+            project.show_projects()
+            menu_project_header()
         if choice == C_ACTION_RETURN:
             loop = False
             do_menu()

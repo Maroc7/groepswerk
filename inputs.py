@@ -1,3 +1,5 @@
+C_WIDTH_TEXT = 50
+
 def get_input_item(text: str, result_type:int = 0) -> any:
     """asks input and returns in correct type
 
@@ -21,3 +23,14 @@ def get_input_item(text: str, result_type:int = 0) -> any:
         result = 0
 
     return result
+
+
+def get_input_text(text: str):
+    inp = input(f'{text}: ')
+    cnt = 1
+    while len(inp) > C_WIDTH_TEXT * cnt:
+        beg_substr = inp[:C_WIDTH_TEXT * cnt]
+        end_substr = inp[C_WIDTH_TEXT * cnt:]
+        inp = beg_substr + '\n' + end_substr
+        cnt += 1
+    return inp
